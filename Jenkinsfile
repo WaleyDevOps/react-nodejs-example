@@ -2,7 +2,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven'
+        maven 'maven-3.9.6'
     }
     
     environment {
@@ -11,36 +11,36 @@ pipeline {
 
     stages {
         stage('build app') {
-           steps {
-               script {
-                    echo 'building application jar....'
-                    buildJar()
+            steps {
+                script {
+                        echo 'building application jar....'
+                        buildJar()
                 }
             }
         }
         stage('Build image') {
+                steps{
+                    script {
+                        echo 'building docker image...'
+                        buildImage(env.IMAGE_NAME)
+                        dockerLogin()
+                        dockerPush(env.IMAGE_NAME)
+                    }
+                }
+        }
             
-            }
-            steps {
-                script {
-                    echo 'building docker image...'
-                    buildImage(env.IMAGE_NAME)
-                    dockerLogin()
-                    dockerPush(env.IMAGE_NAME)
-                }
-            }
-        }
-        
         stage('Deploy') {
-            steps {
-                script {
-                    echo 'deploying docker image to EC2'
-                    def dockerCmd = "docker run -p 3080:3080 -d ${IMAGE_NAME}"
-                    sshagent (['ec2-server-key']) {
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@18.201.234.153 ${dockerCmd}"
-                    } 
+                steps{
+                    script {
+                        echo 'deploying docker image to EC2'
+                        def dockerCmd = "docker run -p 3080:3080 -d ${IMAGE_NAME}"
+                        sshagent (['ec2-server-key']) {
+                            sh "ssh -o StrictHostKeyChecking=no ec2-user@18.201.234.153 ${dockerCmd}"
+                        } 
+                    }
                 }
-        }
         }
     }
+}
+
 
