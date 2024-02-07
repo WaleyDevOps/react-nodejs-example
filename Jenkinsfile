@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        IMAGE_NAME = 'waledevops/demo-app:node-app-2.0'
+        IMAGE_NAME = 'waledevops/demo-app:nodeapp-2.0'
     }
 
     stages {
@@ -33,7 +33,7 @@ pipeline {
                         echo 'deploying docker image to EC2'
                         def dockerCmd = "docker run -p 3080:3080 -d ${IMAGE_NAME}"
                         sshagent (['ec2-server-key']) {
-                            sh "ssh -o StrictHostKeyChecking=no ec2-user@x.x.x.x ${dockerCmd}"
+                            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.229.143.69 ${dockerCmd}"
                         } 
                     }
                 }
