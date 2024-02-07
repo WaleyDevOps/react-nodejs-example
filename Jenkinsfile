@@ -10,11 +10,11 @@ pipeline {
     }
 
     stages {
-        stage('build app') {
+        stage('Testing app') {
             steps {
                 script {
                         echo 'building application jar....'
-                        buildJar()
+                        
                 }
             }
         }
@@ -22,9 +22,7 @@ pipeline {
                 steps{
                     script {
                         echo 'building docker image...'
-                        buildImage(env.IMAGE_NAME)
-                        dockerLogin()
-                        dockerPush(env.IMAGE_NAME)
+                        
                     }
                 }
         }
